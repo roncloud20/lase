@@ -4,7 +4,9 @@
 export default function DashboardSideBar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
-  console.log(user);
+  // console.log(user);
+  const authToken = localStorage.getItem('token');
+  // console.log(authToken);
 
   useEffect(()=>{
     // const user = JSON.parse(localStorage.getItem(user));
@@ -101,7 +103,7 @@ export default function DashboardSideBar() {
             {/* Products */}
             <NavLink
               className="flex items-center px-4 py-2 mt-5 text-gray-600 transition-colors duration-300 transform rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
-              to="/products"
+              to="/add-product"
             >
               <svg
                 className="w-5 h-5"

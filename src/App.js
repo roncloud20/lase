@@ -1,10 +1,13 @@
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ItemView from "./pages/ItemView";
 import Dashboard from "./pages/Dashboard";
 import AddProduct from "./pages/AddProduct";
 import EmailVerify from "./pages/EmailVerify";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminUsers from "./pages/Admin/AdminUsers";
 function App() {
   return (
     <>
@@ -12,10 +15,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/itemview" element={<ItemView />} />
           <Route path="/register" element={<Register />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/email-verify" element={<EmailVerify />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard/>} />
+          <Route path="/admin/users" element={<AdminUsers/>} />
         </Routes>
       </BrowserRouter>
     </>

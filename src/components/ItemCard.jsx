@@ -1,25 +1,26 @@
-import React from "react";
-import avatar from "../assets/avatar.jpg";
 import ImageSlide from "./ImageSlide";
+import { Link } from "react-router-dom";
+import avatar from "../assets/avatar.jpg";
 
-export default function ItemCard({name, initial, selling, image}) {
+export default function ItemCard({id, name, initial, selling, image}) {
   return (
     <>
       <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-        <a href="#">
-          {/* <img
+        <Link to={`/itemview?pid=${id}`}>
+          <img
             class="p-8 rounded-t-lg"
             src={`http://lasestore.test/${image}` || avatar }
-            alt="product image"
-          /> */}
-          <ImageSlide slide1={image}/>
-        </a>
+            alt={name || "Product name"}
+            style={{ height: "400px", width: "100%", objectFit: "cover" }}
+          />
+          {/* <ImageSlide slide1={image}/> */}
+        </Link>
         <div class="px-5 pb-5">
-          <a href="#">
+          <Link to={`/itemview?pid=${id}`}>
             <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
               {name || 'Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport'}
             </h5>
-          </a>
+          </Link>
           <div class="flex items-center mt-2.5 mb-5">
             <div class="flex items-center space-x-1 rtl:space-x-reverse">
               <svg
@@ -80,12 +81,11 @@ export default function ItemCard({name, initial, selling, image}) {
               {selling.toLocaleString("en-NG", {style:"currency", currency:"NGN"})|| '$499'}
             </span>
            
-            <a
-              href="#"
+            <Link to={`/itemview?pid=${id}`}
               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Add to cart
-            </a>
+            </Link>
           </div>
         </div>
       </div>

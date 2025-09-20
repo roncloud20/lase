@@ -62,13 +62,10 @@ export default function AddProduct() {
     data.append("product_quantity", formData.product_quantity);
     data.append("product_image", image);
     console.log(data);
+    console.log(formData);
 
     try {
       const response =await axios.post("http://lasestore.test/api/addproduct",
-        // {
-        //   ...formData,
-        //   product_image: image,
-        // },
         data,
         {
           headers: {
@@ -78,6 +75,26 @@ export default function AddProduct() {
       );
       console.log(response);
       alert("Product Added Successfully");
+      setFormData({
+        product_name : "",
+        product_category: "",
+        initial_price: "",
+        selling_price : "",
+        product_description : "",
+        product_quantity : "",
+        product_image: "",
+      });
+      setFile(null);
+      setImage(null);
+      setError({
+        product_name : "",
+        product_category: "",
+        initial_price: "",
+        selling_price : "",
+        product_description : "",
+        product_quantity : "",
+        product_image: "",
+      });
 
     } catch (error) {
       console.log(error.response.data.errors);
@@ -90,14 +107,23 @@ export default function AddProduct() {
       <div className="flex flex-row">
         <DashboardSideBar />
         <main className="ml-64 p-5 max-w-screen-lg flex-wrap h-screen grow">
-          <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            className="space-y-6"
+          >
             <h1 className="text-3xl font-extrabold text-gray-900">
               Add Product
             </h1>
 
             {/* File Upload & Preview */}
             <div>
-              <input type="file" onChange={handleUpload} className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`} id="file_input" />
+              <input
+                type="file"
+                onChange={handleUpload}
+                className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                id="file_input"
+              />
               <span className="text-red-500">{error.product_image[0]}</span>
               {file && <img src={file} alt="Uploaded preview" />}
             </div>
@@ -115,6 +141,7 @@ export default function AddProduct() {
                 name="product_name"
                 placeholder="Product Name"
                 onChange={handleChange}
+                value={formData.product_name}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{error.product_name[0]}</span>
@@ -133,6 +160,7 @@ export default function AddProduct() {
                 name="product_category"
                 onChange={handleChange}
                 placeholder="Product Category"
+                value={formData.product_category}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{error.product_category[0]}</span>
@@ -151,6 +179,7 @@ export default function AddProduct() {
                 name="initial_price"
                 onChange={handleChange}
                 placeholder="Initial Price"
+                value={formData.initial_price}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{error.initial_price[0]}</span>
@@ -169,6 +198,7 @@ export default function AddProduct() {
                 name="selling_price"
                 onChange={handleChange}
                 placeholder="Selling Price"
+                value={formData.selling_price}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{error.selling_price[0]}</span>
@@ -187,9 +217,12 @@ export default function AddProduct() {
                 name="product_description"
                 placeholder="Product Description"
                 rows="4"
+                value={formData.product_description}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               ></textarea>
-              <span className="text-red-500">{error.product_description[0]}</span>
+              <span className="text-red-500">
+                {error.product_description[0]}
+              </span>
             </div>
 
             {/* Product Quantity */}
@@ -201,10 +234,12 @@ export default function AddProduct() {
                 Product Quantity
               </label>
               <input
+                min="1"
                 type="number"
                 name="product_quantity"
                 onChange={handleChange}
                 placeholder="Product Quantity"
+                value={formData.product_quantity}
                 className={`w-full px-4 py-3 rounded-lg border  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{error.product_quantity[0]}</span>
@@ -212,7 +247,10 @@ export default function AddProduct() {
 
             {/* Submit Button */}
             <div>
-              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3.5 rounded-lg duration-200 transform hover:scale-[1.01] shadow-md">
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3.5 rounded-lg duration-200 transform hover:scale-[1.01] shadow-md"
+              >
                 Add New Product
               </button>
             </div>

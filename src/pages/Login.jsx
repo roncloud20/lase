@@ -67,8 +67,10 @@ export default function Login() {
       
         setErrors("");
         alert(response.data.message);
-        if (user.role === "admin" || user.role === "vendor") {
+        if (user.role === "vendor") {
           navigate("/dashboard");
+        } else if (user.role === "admin") {
+          navigate("/admin/dashboard");
         } else {
           navigate('/');
         }

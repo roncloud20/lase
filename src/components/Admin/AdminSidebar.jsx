@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import icon from "../../assets/icon.png";
 
 export default function AdminSidebar(props) {
       const navigate = useNavigate();
@@ -43,12 +44,12 @@ export default function AdminSidebar(props) {
               </button>
               <a href="https://flowbite.com" class="flex ms-2 md:me-24">
                 <img
-                  src="https://flowbite.com/docs/images/logo.svg"
+                  src={icon}
                   class="h-8 me-3"
                   alt="FlowBite Logo"
                 />
                 <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                  Flowbite
+                  LASESTORE
                 </span>
               </a>
             </div>

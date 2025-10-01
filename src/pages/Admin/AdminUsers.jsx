@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminSidebar from "../../components/Admin/AdminSidebar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -199,12 +200,12 @@ export default function AdminUsers() {
                         </div>
                       </td>
                       <td class="px-6 py-4">
-                        <a
-                          href="#"
+                        <Link
+                          to={`/admin/users/edit?id=${user.id}`}
                           class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Edit user
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   ))}

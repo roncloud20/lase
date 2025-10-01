@@ -3,8 +3,20 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import { useNavigate, Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import avatar from '../assets/avatar.jpg';
 
 export default function Register() {
+   // Handle file upload
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const handleUpload = (e) => {
+    console.log(e.target.files);
+    setImage(e.target.files[0]);
+    setFile(URL.createObjectURL(e.target.files[0]));
+    console.log(image);
+  }
+
   // Capturing all user entries
   const [formData, setFormData] = useState({
     firstname: "",
@@ -26,16 +38,16 @@ export default function Register() {
   const navigate = useNavigate();
 
   // console.log(formData);
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if (!validateForm()) return;
-    
+    console.log(image);
     try {
-      const response =  await axios.post("http://lasestore.test/api/register", {
+      const response = await axios.post("http://lasestore.test/api/register", {
         firstname: formData.firstname,
         lastname: formData.lastname,
         phone_number: formData.phone_number,
@@ -43,16 +55,23 @@ export default function Register() {
         password: formData.password,
         confirm_password: formData.confirm_password,
         role: formData.role,
-      })
-      if(response.status === 201) {
+        imageP: image,
+      },{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if (response.status === 201) {
         // console.log(response);
         setErrors("");
         alert(response.data.message);
         navigate(`/email-verify?email=${formData.email}`);
       }
-    } catch(error) {
+    } catch (error) {
       setErrors(error.response.data.errors);
-      // alert(error.response.data.message);
+      console.log(error.response.data.errors)
+      alert(error.response.data.message);
+      
     }
   };
   return (
@@ -72,6 +91,33 @@ export default function Register() {
 
           <div className="space-y-4">
             <div>
+              <figure className="max-w-lg">
+                <img
+                  className="h-auto max-w-full rounded-lg"
+                  src={file || avatar}
+                  alt="upload profile"
+                />
+                <figcaption className="mt-2 text-sm text-center text-red-500 dark:text-red-400">
+                  {errors.image}
+                </figcaption>
+              </figure>
+
+              <label
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                for="file_input"
+              >
+                Upload file
+              </label>
+              <input
+                onChange={handleUpload}
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="file_input"
+                type="file"
+                accept="image/png, image/jpg, image/jpeg"
+              />
+            </div>
+
+            <div>
               <label
                 htmlFor="firstname"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -84,7 +130,9 @@ export default function Register() {
                 onChange={handleChange}
                 value={formData.firstname}
                 placeholder="John"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.firstname ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`} 
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.firstname ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{errors.firstname}</span>
             </div>
@@ -102,7 +150,9 @@ export default function Register() {
                 onChange={handleChange}
                 value={formData.lastname}
                 placeholder="Doe"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.lastname ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.lastname ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{errors.lastname}</span>
             </div>
@@ -120,7 +170,9 @@ export default function Register() {
                 onChange={handleChange}
                 value={formData.email}
                 placeholder="johndoe@email.com"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.email ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{errors.email}</span>
             </div>
@@ -138,7 +190,9 @@ export default function Register() {
                 onChange={handleChange}
                 value={formData.phone_number}
                 placeholder="+2348123456789"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.phone_number ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.phone_number ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{errors.phone_number}</span>
             </div>
@@ -157,7 +211,9 @@ export default function Register() {
                   name="password"
                   onChange={handleChange}
                   value={formData.password}
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.password ? "border-red-500" : "border-gray-200"
+                  }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                 />
                 <button
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-blue-500 transition-colors"
@@ -187,7 +243,11 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData.confirm_password}
                   placeholder="Confirm Password"
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.confirm_password ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.confirm_password
+                      ? "border-red-500"
+                      : "border-gray-200"
+                  }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                 />
                 <button
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-blue-500 transition-colors"
@@ -214,7 +274,9 @@ export default function Register() {
                 name="role"
                 onChange={handleChange}
                 value={formData.role}
-                className={`w-full px-4 py-3 rounded-lg border ${errors.role ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.role ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               >
                 <option>Select Role</option>
                 <option value="user">User</option>
@@ -230,7 +292,12 @@ export default function Register() {
             </div>
 
             <div>
-                <p>Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Click here to login</Link></p>
+              <p>
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-600 hover:underline">
+                  Click here to login
+                </Link>
+              </p>
             </div>
           </div>
         </form>

@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminEditUser from "./pages/Admin/AdminEditUser";
+import ForgetPassword from "./pages/ForgetPassword";
 function App() {
   return (
     <>
@@ -19,10 +20,11 @@ function App() {
           <Route path="/itemview" element={<ItemView />} />
           <Route path="/register" element={<Register />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/admin/users" element={<AdminUsers/>} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/email-verify" element={<EmailVerify />} />
+          <Route path="/forget-password" element={<ForgetPassword/>}/>
           <Route path="/admin/dashboard" element={<AdminDashboard/>} />
-          <Route path="/admin/users" element={<AdminUsers/>} />
           <Route path="/admin/users/edit" element={<AdminEditUser />} />
         </Routes>
       </BrowserRouter>

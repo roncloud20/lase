@@ -151,8 +151,9 @@ export default function Login() {
               </button>
             </div>
 
-            <div>
-                <p>You don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Click here to register</Link></p>
+            <div className="flex gap-5 text-sm">
+                <Link to="/register" className="text-blue-600 hover:underline">Click here to register</Link>
+                <Link to="/forget-password" className="text-blue-600 hover:underline">Click here to change password</Link>
             </div>
           </div>
         </form>

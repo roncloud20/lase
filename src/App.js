@@ -11,6 +11,7 @@ import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminEditUser from "./pages/Admin/AdminEditUser";
 import ForgetPassword from "./pages/ForgetPassword";
 import ChangePassword from "./pages/ChangePassword";
+import AdminProductsList from "./pages/Admin/AdminProductsList";
 function App() {
   return (
     <>
@@ -24,10 +25,11 @@ function App() {
           <Route path="/admin/users" element={<AdminUsers/>} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/email-verify" element={<EmailVerify />} />
-          <Route path="/change-password" element={<ChangePassword />}/>
-          <Route path="/forget-password" element={<ForgetPassword />}/>
           <Route path="/admin/dashboard" element={<AdminDashboard/>} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/admin/users/edit" element={<AdminEditUser />} />
+          <Route path="/admin/products" element={<AdminProductsList/>} />
         </Routes>
       </BrowserRouter>
     </>

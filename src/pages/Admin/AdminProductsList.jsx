@@ -20,8 +20,31 @@ export default function AdminProductsList() {
     };
 
     fetchData();
+    
   }, []);
-  console.log(products);
+  
+  const changeStatus = async (id, status) => {
+    console.log(id, status);
+    try {
+      const response = await axios.post(
+        `http://lasestore.test/api/products/status/${id}`,
+        {
+          status: status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      alert(response.data.message);
+      window.location.reload();
+    } catch(error) {
+      console.log(error)
+    }
+  };
+  
+  // console.log(products);
   return (
     <>
       <AdminSidebar>
@@ -167,7 +190,10 @@ export default function AdminProductsList() {
 
             <tbody>
               {products.map((product, index) => (
-                <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
                   <td className="w-4 p-4">
                     <div className="flex items-center">
                       <input
@@ -186,14 +212,29 @@ export default function AdminProductsList() {
                   >
                     <img
                       className="w-10 h-10 rounded-full"
-                      src={'http://lasestore.test/' + product.product_image||""}
-                      alt="Jese image"
+
+                      src={
+                        "http://lasestore.test/" + product.product_image || ""
+                      }
+                      alt={product.product_name}
                     />
                     <div className="ps-3">
-                      <div className="text-base font-semibold">{product.product_name}</div>
+                      <div className="text-base font-semibold">
+                        {product.product_name}
+                      </div>
                       <div className="font-normal text-gray-500 flex gap-3">
-                        <span>{product.initial_price.toLocaleString('en-NG',{style: "currency", currency: "NGN"})}</span>
-                        <span>{product.selling_price.toLocaleString('en-NG',{style: "currency", currency: "NGN"})}</span>
+                        <span>
+                          {product.initial_price.toLocaleString("en-NG", {
+                            style: "currency",
+                            currency: "NGN",
+                          })}
+                        </span>
+                        <span>
+                          {product.selling_price.toLocaleString("en-NG", {
+                            style: "currency",
+                            currency: "NGN",
+                          })}
+                        </span>
                         {/* <span>{product.selling_price}</span> */}
                       </div>
                     </div>
@@ -206,12 +247,33 @@ export default function AdminProductsList() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    <button
+                      type="button"
+                      className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                      onClick={(e) =>
+                        changeStatus(product.product_id, "approved")
+                      }
                     >
-                      Edit user
-                    </a>
+                      Approved
+                    </button>
+                    <button
+                      type="button"
+                      className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                      onClick={(e) =>
+                        changeStatus(product.product_id, "rejected")
+                      }
+                    >
+                      Declined
+                    </button>
+                    <button
+                      type="button"
+                      className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                      onClick={(e) =>
+                        changeStatus(product.product_id, "pending")
+                      }
+                    >
+                      Pending
+                    </button>
                   </td>
                 </tr>
               ))}

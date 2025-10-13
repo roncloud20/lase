@@ -10,7 +10,6 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-
   });
   const handleChange = (e) => {
     setFormData({
@@ -18,53 +17,52 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
-  
+
   const navigate = useNavigate();
   // const { login } = useAuth();
 
   // console.log(formData);
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // // Validate User Entry 
+  // // Validate User Entry
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Validate email
-    if(!formData.email.trim()) {
+    if (!formData.email.trim()) {
       newErrors.email = "Email address is required";
     }
-    
+
     // Validate password
-    if(!formData.password) {
+    if (!formData.password) {
       newErrors.password = "Password is required";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  
-    // console.log(newErrors);
 
-  }
+    // console.log(newErrors);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     try {
-      const response =  await axios.post("http://lasestore.test/api/login", {
+      const response = await axios.post("http://lasestore.test/api/login", {
         email: formData.email,
         password: formData.password,
-      })
-      if(response.status === 200) {
+      });
+      if (response.status === 200) {
         console.log(response);
-        const {token, user } = response.data;
+        const { token, user } = response.data;
         // login(token, user);
 
         // const token = response.data.token;
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-      
+
         setErrors("");
         alert(response.data.message);
         if (user.role === "vendor") {
@@ -72,12 +70,14 @@ export default function Login() {
         } else if (user.role === "admin") {
           navigate("/admin/dashboard");
         } else {
-          navigate('/');
+          navigate("/");
         }
-      }
-    } catch(error) {
+      }   
+      console.log(response)
+    } catch (error) {
+      console.log(error)
       setErrors(error.response.data.errors);
-      // alert(error.response.data.message);
+      alert(error.response.data.message);
     }
   };
   return (
@@ -89,14 +89,11 @@ export default function Login() {
           onSubmit={handleSubmit}
         >
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-extrabold text-gray-900">
-              Login Now
-            </h2>
+            <h2 className="text-3xl font-extrabold text-gray-900">Login Now</h2>
             <p className="text-gray-500 text-sm">Access your account</p>
           </div>
 
           <div className="space-y-4">
-
             <div>
               <label
                 htmlFor="email"
@@ -110,7 +107,9 @@ export default function Login() {
                 onChange={handleChange}
                 value={formData.email}
                 placeholder="johndoe@email.com"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.email ? "border-red-500" : "border-gray-200"
+                }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
               />
               <span className="text-red-500">{errors.email}</span>
             </div>
@@ -129,7 +128,9 @@ export default function Login() {
                   name="password"
                   onChange={handleChange}
                   value={formData.password}
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-200'}  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.password ? "border-red-500" : "border-gray-200"
+                  }  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                 />
                 <button
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-blue-500 transition-colors"
@@ -152,8 +153,15 @@ export default function Login() {
             </div>
 
             <div className="flex gap-5 text-sm">
-                <Link to="/register" className="text-blue-600 hover:underline">Click here to register</Link>
-                <Link to="/forget-password" className="text-blue-600 hover:underline">Click here to change password</Link>
+              <Link to="/register" className="text-blue-600 hover:underline">
+                Click here to register
+              </Link>
+              <Link
+                to="/forget-password"
+                className="text-blue-600 hover:underline"
+              >
+                Click here to change password
+              </Link>
             </div>
           </div>
         </form>

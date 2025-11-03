@@ -12,12 +12,14 @@ import AdminEditUser from "./pages/Admin/AdminEditUser";
 import ForgetPassword from "./pages/ForgetPassword";
 import ChangePassword from "./pages/ChangePassword";
 import AdminProductsList from "./pages/Admin/AdminProductsList";
+import Cart from "./pages/Cart";
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/cart" element={<Cart/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/itemview" element={<ItemView />} />
           <Route path="/register" element={<Register />} />

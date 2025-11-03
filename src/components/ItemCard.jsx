@@ -1,8 +1,27 @@
 import ImageSlide from "./ImageSlide";
 import { Link } from "react-router-dom";
 import avatar from "../assets/avatar.jpg";
+import { Button } from "@headlessui/react";
+// import { useEffect } from "react";
 
 export default function ItemCard({id, name, initial, selling, image}) {
+  const addToCart = () => {
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const findItem = existingCart.find((item)=> item.productID === id);
+    if(findItem) {
+      const updateCart = existingCart.map((item)=>item.productID == id ? {...item, quantity: item.quantity + 1} : item);
+      localStorage.setItem('cart', JSON.stringify(updateCart));
+      console.log(updateCart);
+    } else {
+      existingCart.push({
+        productID: id,
+        quantity: 1,
+      });
+      localStorage.setItem('cart', JSON.stringify(existingCart));
+    }
+  }
+  
   return (
     <>
       <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -81,11 +100,16 @@ export default function ItemCard({id, name, initial, selling, image}) {
               {selling.toLocaleString("en-NG", {style:"currency", currency:"NGN"})|| '$499'}
             </span>
            
-            <Link to={`/itemview?pid=${id}`}
+            {/* <Link to={`/itemview?pid=${id}`}
               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Add to cart
-            </Link>
+            </Link> */}
+            <Button onClick={addToCart}
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Add to cart
+            </Button>
           </div>
         </div>
       </div>

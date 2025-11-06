@@ -6,26 +6,30 @@ import axios from "axios";
 export default function Cart() {
   const [products, setProducts] = useState([]);
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("http://lasestore.test/api/allproduct");
       const produces = response.data.products;
+      console.log("Produces", produces);
+      console.log("Cart", cart);
 
-        const newItem = []
-      cart.forEach((item, index)=>{
-        const prod = produces.find(items => items.product_id === item.productID);
-        newItem.push(prod);
-     
-      })
+      const newItem = [];
+      cart.forEach((item, index) => {
+        const prod = produces.find(
+          (items) => items.product_id === item.productID
+        );
+        newItem.push({produce: prod, q:item.quantity});
+      });
 
-      setProducts(newItem)
-      
+      setProducts(newItem);
+      console.log("New Items", newItem);
     };
-  
+
     fetchData();
   }, []);
 
-  console.log(products)
+  // console.log(products);
   return (
     <>
       <Header />
@@ -40,19 +44,24 @@ export default function Cart() {
               <div className="space-y-6">
                 {cart.length > 0 ? (
                   products.map((item) => (
-                    
                     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                       <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                         <Link to="#" className="shrink-0 md:order-1">
                           <img
                             className="h-20 w-20 dark:hidden"
-                            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-                            alt="Product"
+                            src={
+                              `http://localhost:8000/${item.product_image}` ||
+                              "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+                            }
+                            alt={item.produce.product_name || "Product"}
                           />
                           <img
                             className="hidden h-20 w-20 dark:block"
-                            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-                            alt="Product"
+                            src={
+                              `http://localhost:8000/${item.produce.product_image}` ||
+                              "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+                            }
+                            alt={item.produce.product_name || "Product"}
                           />
                         </Link>
 
@@ -83,13 +92,14 @@ export default function Cart() {
                                 />
                               </svg>
                             </button>
+
                             <input
                               type="text"
                               id="counter-input"
                               data-input-counter
                               className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
                               placeholder=""
-                              value="2"
+                              value={item.q}
                               required
                             />
                             <button
@@ -117,7 +127,18 @@ export default function Cart() {
                           </div>
                           <div className="text-end md:order-4 md:w-32">
                             <p className="text-base font-bold text-gray-900 dark:text-white">
-                              {item.selling_price.toLocaleString('en-NG', {style: 'currency', currency: 'NGN'})}
+                              {item.produce.selling_price.toLocaleString("en-NG", {
+                                style: "currency",
+                                currency: "NGN",
+                              })}
+                            </p>
+                          </div>
+                          <div className="text-end md:order-4 md:w-32">
+                            <p className="text-base font-bold text-gray-900 dark:text-white">
+                              {item.produce.selling_price.toLocaleString("en-NG", {
+                                style: "currency",
+                                currency: "NGN",
+                              })}
                             </p>
                           </div>
                         </div>
@@ -127,10 +148,10 @@ export default function Cart() {
                             to="#"
                             className="text-base font-medium text-gray-900 hover:underline dark:text-white"
                           >
-                            {item.product_name || `PC system All in One APPLE iMac (2023) mqrq3ro/a,
+                            {item.produce.product_name ||
+                              `PC system All in One APPLE iMac (2023) mqrq3ro/a,
                             Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core
                             GPU, Keyboard layout INT`}
-                            
                           </Link>
 
                           <div className="flex items-center gap-4">

@@ -5,6 +5,9 @@ import axios from "axios";
 
 export default function Cart() {
   const [products, setProducts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [overallTotal, setOverallTotal] = useState(0);
+  const [tax, setTax] = useState(0);
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   useEffect(() => {
@@ -24,12 +27,25 @@ export default function Cart() {
 
       setProducts(newItem);
       console.log("New Items", newItem);
+      let newTotal = 0
+      newItem.forEach(item =>{
+        // console.log(item);
+        let cost = item.produce.selling_price * item.q
+        newTotal += cost;
+        // console.log(cost);
+      })
+      setTotalPrice(newTotal);
+      let newTax = (7.5 / 100) * newTotal;
+      setTax(newTax);
+      let overall = newTotal + newTax;
+      setOverallTotal(overall);
+      // console.log(newTotal);
     };
 
     fetchData();
   }, []);
 
-  // console.log(products);
+ ;
   return (
     <>
       <Header />
@@ -50,7 +66,7 @@ export default function Cart() {
                           <img
                             className="h-20 w-20 dark:hidden"
                             src={
-                              `http://localhost:8000/${item.product_image}` ||
+                              `http://lasestore.test/${item.produce.product_image}` ||
                               "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
                             }
                             alt={item.produce.product_name || "Product"}
@@ -58,7 +74,7 @@ export default function Cart() {
                           <img
                             className="hidden h-20 w-20 dark:block"
                             src={
-                              `http://localhost:8000/${item.produce.product_image}` ||
+                              `http://lasestore.test/${item.produce.product_image}` ||
                               "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
                             }
                             alt={item.produce.product_name || "Product"}
@@ -135,7 +151,7 @@ export default function Cart() {
                           </div>
                           <div className="text-end md:order-4 md:w-32">
                             <p className="text-base font-bold text-gray-900 dark:text-white">
-                              {item.produce.selling_price.toLocaleString("en-NG", {
+                              {Number(item.q * item.produce.selling_price).toLocaleString("en-NG", {
                                 style: "currency",
                                 currency: "NGN",
                               })}
@@ -225,10 +241,10 @@ export default function Cart() {
                   <div className="space-y-2">
                     <dl className="flex items-center justify-between gap-4">
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Original price
+                        Cost:
                       </dt>
                       <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $7,592.00
+                        {totalPrice.toLocaleString('en-NG', {style: 'currency', currency: 'NGN'})}
                       </dd>
                     </dl>
 
@@ -237,7 +253,7 @@ export default function Cart() {
                         Savings
                       </dt>
                       <dd className="text-base font-medium text-green-600">
-                        -$299.00
+                        0
                       </dd>
                     </dl>
 
@@ -246,16 +262,16 @@ export default function Cart() {
                         Store Pickup
                       </dt>
                       <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $99
+                        0
                       </dd>
                     </dl>
 
                     <dl className="flex items-center justify-between gap-4">
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Tax
+                        Tax:
                       </dt>
                       <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $799
+                        {tax.toLocaleString('en-NG', {style: 'currency', currency: 'NGN'})}
                       </dd>
                     </dl>
                   </div>
@@ -265,7 +281,7 @@ export default function Cart() {
                       Total
                     </dt>
                     <dd className="text-base font-bold text-gray-900 dark:text-white">
-                      $8,191.00
+                      {overallTotal.toLocaleString('en-NG', {style: 'currency', currency: 'NGN'})}
                     </dd>
                   </dl>
                 </div>

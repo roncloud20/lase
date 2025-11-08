@@ -18,6 +18,7 @@ export default function ItemCard({id, name, initial, selling, image}) {
       });
       localStorage.setItem('cart', JSON.stringify(existingCart));
     }
+    window.location.reload();
   }
   
   return (

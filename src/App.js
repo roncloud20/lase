@@ -13,6 +13,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import ChangePassword from "./pages/ChangePassword";
 import AdminProductsList from "./pages/Admin/AdminProductsList";
 import Cart from "./pages/Cart";
+import AddAddress from "./pages/AddAddress";
 function App() {
   return (
     <>
@@ -26,6 +27,7 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/admin/users" element={<AdminUsers/>} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/add-address" element={<AddAddress />} />
           <Route path="/email-verify" element={<EmailVerify />} />
           <Route path="/admin/dashboard" element={<AdminDashboard/>} />
           <Route path="/change-password" element={<ChangePassword />} />

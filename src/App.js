@@ -14,6 +14,7 @@ import ChangePassword from "./pages/ChangePassword";
 import AdminProductsList from "./pages/Admin/AdminProductsList";
 import Cart from "./pages/Cart";
 import AddAddress from "./pages/AddAddress";
+import Checkout from "./pages/Checkout";
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart/>} />
           <Route path="/login" element={<Login />} />
+          <Route path="/checkout" element={<Checkout />}/>
           <Route path="/itemview" element={<ItemView />} />
           <Route path="/register" element={<Register />} />
           <Route path="/Dashboard" element={<Dashboard />} />

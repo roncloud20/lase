@@ -2,10 +2,26 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import PaystackButton from "../components/PaystackButton";
 
 export default function Checkout() {
+  const [products, setProducts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [overallTotal, setOverallTotal] = useState(0);
+  const [tax, setTax] = useState(0);
   const [addresses, setAddresses] = useState([]);
+  const [addressId, setAddressId] = useState(null);
   const authToken = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const email = user.email;
+  const date = new Date();
+  const randNum = Math.ceil(Math.random() * 1000);
+  const order_ref = `order_${date.getFullYear()}${
+    date.getMonth() + 1
+  }${date.getDate()}${randNum}`;
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  console.log("Cart items in checkout:", cart);
   useEffect(() => {
     const fetchAddress = async () => {
       const response = await axios.get("http://lasestore.test/api/getaddress", {
@@ -13,13 +29,56 @@ export default function Checkout() {
           Authorization: `Bearer ${authToken}`,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       setAddresses(response.data.addresses);
     };
 
     fetchAddress();
   }, [authToken]);
-  console.log(addresses);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://lasestore.test/api/allproduct");
+      const produces = response.data.products;
+      console.log("Produces", produces);
+      console.log("Cart", cart);
+
+      const newItem = [];
+      cart.forEach((item, index) => {
+        const prod = produces.find(
+          (items) => items.product_id === item.productID
+        );
+        newItem.push({ produce: prod, q: item.quantity });
+      });
+
+      setProducts(newItem);
+      console.log("New Items", newItem);
+      let newTotal = 0;
+      newItem.forEach((item) => {
+        // console.log(item);
+        let cost = item.produce.selling_price * item.q;
+        newTotal += cost;
+        // console.log(cost);
+      });
+      setTotalPrice(newTotal);
+      let newTax = (7.5 / 100) * newTotal;
+      setTax(newTax);
+      let overall = newTotal + newTax;
+      setOverallTotal(overall);
+      // console.log(newTotal);
+    };
+
+    fetchData();
+  }, []);
+  console.log("Total Price:", overallTotal);
+
+  const changeAddressId = (e) => {
+    if (e.target.checked) {
+      setAddressId(e.target.value);
+    }
+  };
+  // console.log("Selected address ID:", addressId)
+
   return (
     <>
       <Header />
@@ -44,7 +103,12 @@ export default function Checkout() {
                         key={address.id}
                         className="rounded-lg border border-gray-200 p-4 shadow-sm dark:border-gray-700 sm:p-6 lg:p-8 mb-4 flex gap-4 items-center"
                       >
-                        <input type="radio" name="address" value={address.id}/>
+                        <input
+                          type="radio"
+                          name="address"
+                          value={address.id}
+                          onClick={(e) => changeAddressId(e)}
+                        />
                         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                           {address.address}, {address.city}, {address.state},{" "}
                           {address.country} - {address.postal_code} <br />
@@ -57,19 +121,24 @@ export default function Checkout() {
                 )}
 
                 <div className="flex gap-4">
-                    <Link
-                      to="/add-address"
-                      className="inline-block rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700"
-                    >
-                      Add New Address
-                    </Link>
-                    <Link
+                  <Link
+                    to="/add-address"
+                    className="inline-block rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700"
+                  >
+                    Add New Address
+                  </Link>
+                  {/* <Link
                       to="/add-address"
                       className="inline-block rounded-lg bg-green-600 px-5 py-3 text-sm font-medium text-white hover:bg-green-700"
                     >
                       Process to Payment
-                    </Link>
-                    
+                    </Link> */}
+                  <PaystackButton
+                    amt={overallTotal}
+                    address_id={addressId}
+                    order_ref={order_ref}
+                    email={email}
+                  />
                 </div>
               </div>
             </div>

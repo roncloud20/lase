@@ -1,32 +1,71 @@
+import axios from "axios";
 import { useEffect } from "react";
-const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) => {
-
+const PaystackButton = ({
+  amt,
+  address_id,
+  order_ref,
+  email,
+  onSuccess,
+  onClose,
+}) => {
   const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
-    useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const authToken = localStorage.getItem("token");
+
+  // const amt = 5000; //amount in Naira
+  useEffect(() => {
     // Load the Paystack script only once
     const script = document.createElement("script");
     script.src = "https://js.paystack.co/v1/inline.js";
     script.async = true;
     document.body.appendChild(script);
+    console.log("address id in paystack button:", address_id);
   }, []);
   const payWithPaystack = () => {
-    // const ref = `PAYSTACK-${Date.now()}`;
+    // const [action, setAction] = useState("");
     const handler = window.PaystackPop.setup({
-      // key: "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
-      key: paystackPublicKey || "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
+      key:
+        paystackPublicKey || "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
       email: email,
       amount: amt * 100,
       currency: "NGN",
-      ref: refCode, //ref,
-      // ref: refCode, //ref,
+      ref: order_ref,
       metadata: {
-        hospital_id: hospital,
+        orderRef: order_ref,
       },
       callback: (response) => {
+        console.log(response);
+        console.log(address_id);
+        if (response.status === "success") {
+          // useEffect(() => {
+          const verifyPayment = async () => {
+            const payment = await axios.post(
+              "http://lasestore.test/api/processpayment",
+              {
+                order_ref: order_ref,
+                total: amt,
+                payment_ref: response.reference,
+                customer_id: user.id,
+                address_id: address_id,
+                payment_method: "Paystack",
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${authToken}`,
+                },
+              }
+            );
+
+            verifyPayment();
+            console.log("Payment verification response:", payment.data);
+          };
+          // });
+        }
+        // setAction(response);
         onSuccess(response); // Pass full response to parent
       },
-      onClose: () => {
-        onClose();
+      onClose: (response) => {
+        onClose(response);
         alert("Payment window closed.");
       },
     });

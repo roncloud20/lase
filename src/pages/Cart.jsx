@@ -29,10 +29,8 @@ export default function Cart() {
       console.log("New Items", newItem);
       let newTotal = 0
       newItem.forEach(item =>{
-        // console.log(item);
         let cost = item.produce.selling_price * item.q
         newTotal += cost;
-        // console.log(cost);
       })
       setTotalPrice(newTotal);
       let newTax = (7.5 / 100) * newTotal;

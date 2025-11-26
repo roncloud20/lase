@@ -70,7 +70,7 @@ export default function Checkout() {
 
     fetchData();
   }, []);
-  console.log("Total Price:", overallTotal);
+  // console.log("Total Price:", overallTotal);
 
   const changeAddressId = (e) => {
     if (e.target.checked) {

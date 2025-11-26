@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 const PaystackButton = ({
   amt,
   address_id,
@@ -8,11 +8,28 @@ const PaystackButton = ({
   onSuccess,
   onClose,
 }) => {
-  const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
-  const user = JSON.parse(localStorage.getItem("user"));
-  const authToken = localStorage.getItem("token");
 
-  // const amt = 5000; //amount in Naira
+  const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY; // initialize from env variables
+  const user = JSON.parse(localStorage.getItem("user")); // get user info
+  const authToken = localStorage.getItem("token"); // get auth token
+  const cart = JSON.parse(localStorage.getItem("cart")) || []; // get cart items
+
+  // Function to create order items in the backend
+  const res = async (data) => {
+    const respo = await axios.post(
+      "http://localhost:8000/api/create/order",
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    console.log("Order created:", respo.data);
+  };
+
+  // Load Paystack script
   useEffect(() => {
     // Load the Paystack script only once
     const script = document.createElement("script");
@@ -21,8 +38,60 @@ const PaystackButton = ({
     document.body.appendChild(script);
     console.log("address id in paystack button:", address_id);
   }, []);
+
+  // Create order items when component mounts
+  // useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://lasestore.test/api/allproduct");
+      const produces = response.data.products;
+      console.log("Produces", produces);
+      console.log("Cart", cart);
+
+      cart.forEach((item, index) => {
+        const prod = produces.find(
+          (items) => items.product_id === item.productID
+        );
+        let data = {
+          product_id: prod.product_id,
+          quantity: item.quantity,
+          unit_price: prod.selling_price,
+          cost_price: prod.selling_price * item.quantity,
+          address_id: address_id,
+          order_ref: order_ref,
+        };
+        res(data);
+      });
+    };
+
+    // fetchData();
+  // }, []);
+
+  const completePayment = async (responseRef) => {
+    fetchData();
+    try {
+      const result = await axios.post(
+        "http://lasestore.test/api/processpayment",
+        {
+          order_ref: order_ref,
+          total: amt,
+          payment_ref: responseRef,
+          customer_id: user.id,
+          address_id: address_id,
+          payment_method: "Paystack",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      console.log("Payment processed:", result.data);
+    } catch (error) {
+      console.error("Error completing payment:", error);
+    }
+  };
+
   const payWithPaystack = () => {
-    // const [action, setAction] = useState("");
     const handler = window.PaystackPop.setup({
       key:
         paystackPublicKey || "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
@@ -37,31 +106,9 @@ const PaystackButton = ({
         console.log(response);
         console.log(address_id);
         if (response.status === "success") {
-          // useEffect(() => {
-          const verifyPayment = async () => {
-            const payment = await axios.post(
-              "http://lasestore.test/api/processpayment",
-              {
-                order_ref: order_ref,
-                total: amt,
-                payment_ref: response.reference,
-                customer_id: user.id,
-                address_id: address_id,
-                payment_method: "Paystack",
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${authToken}`,
-                },
-              }
-            );
-
-            verifyPayment();
-            console.log("Payment verification response:", payment.data);
-          };
-          // });
+          completePayment(response.reference);
         }
-        // setAction(response);
+
         onSuccess(response); // Pass full response to parent
       },
       onClose: (response) => {

@@ -107,6 +107,7 @@ const PaystackButton = ({
         console.log(address_id);
         if (response.status === "success") {
           completePayment(response.reference);
+          localStorage.removeItem("cart");
         }
 
         onSuccess(response); // Pass full response to parent

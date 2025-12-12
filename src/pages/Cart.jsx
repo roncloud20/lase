@@ -71,8 +71,14 @@ export default function Cart() {
     }
   }
 
-  // console.log("Cart Items:", cartItems);
-  // console.log("Products:", products);
+  const removeItem = (id) => {
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const updateCart = existingCart.filter((item) => item.productID !== id);
+    localStorage.setItem("cart", JSON.stringify(updateCart));
+    setProductMatches((prevMatches) =>
+      prevMatches.filter((item) => item.product_id !== id)
+    );
+  }
   console.log("Product Matches:", productMatches);
   return (
     <>
@@ -230,6 +236,7 @@ export default function Cart() {
 
                             <button
                               type="button"
+                              onClick={() => removeItem(item.product_id)}
                               className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
                             >
                               <svg
